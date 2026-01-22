@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: flask-crash-app
+  name: super-important-app
   labels:
-    app: flask-crash-app
+    app: super-important-app
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: flask-crash-app
+      app: super-important-app
   template:
     metadata:
       labels:
-        app: flask-crash-app
+        app: super-important-app
     spec:
       containers:
       - name: flask-app

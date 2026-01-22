@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: flask-crash-app
+  name: super-important-app-service
   labels:
-    app: flask-crash-app
+    app: super-important-app
 spec:
   type: LoadBalancer
   ports:
@@ -12,4 +12,4 @@ spec:
     protocol: TCP
     name: http
   selector:
-    app: flask-crash-app
+    app: super-important-app
