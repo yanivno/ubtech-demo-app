@@ -1,12 +1,9 @@
 import os
-import random
-import signal
-import sys
 from flask import Flask, jsonify
 
 app = Flask(__name__)
 
-# Track request count for deterministic failures
+# Track request count
 request_count = 0
 
 @app.route('/')
@@ -29,28 +26,13 @@ def test():
     global request_count
     request_count += 1
     
-    # Random failure simulation - approximately 30% chance of failure
-    failure_chance = random.random()
-    
-    if failure_chance < 0.15:
-        # Simulate a crash - exit the process
-        print(f"Request #{request_count}: CRASH! Application terminating...", flush=True)
-        sys.stdout.flush()
-        os._exit(1)  # Force exit to simulate crash
-    
-    elif failure_chance < 0.30:
-        # Simulate an unhandled exception
-        print(f"Request #{request_count}: Unhandled exception occurring...", flush=True)
-        raise RuntimeError("Simulated unhandled exception - application unstable!")
-    
-    else:
-        # Success case
-        print(f"Request #{request_count}: Success!", flush=True)
-        return jsonify({
-            "status": "success",
-            "message": "Test completed successfully",
-            "request_number": request_count
-        }), 200
+    # Success case - no longer crashes or raises exceptions
+    print(f"Request #{request_count}: Success!", flush=True)
+    return jsonify({
+        "status": "success",
+        "message": "Test completed successfully",
+        "request_number": request_count
+    }), 200
 
 @app.errorhandler(Exception)
 def handle_exception(e):

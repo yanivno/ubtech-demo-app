@@ -1,16 +1,13 @@
-# Flask Crash Test Application
+# Flask Test Application
 
-A simple Flask application designed to demonstrate Kubernetes resilience by randomly failing on `/test` requests.
+A simple Flask application with multiple endpoints for testing Kubernetes deployments.
 
 ## Application Behavior
 
 - **`/`** - Home endpoint, always returns success
 - **`/health`** - Health check endpoint for liveness probe
 - **`/ready`** - Readiness check endpoint
-- **`/test`** - Test endpoint that randomly:
-  - Returns success (~70% of the time)
-  - Throws an unhandled exception (~15% of the time)
-  - Crashes the application (~15% of the time)
+- **`/test`** - Test endpoint that returns success with request count
 
 ## Local Development
 
@@ -61,18 +58,18 @@ curl http://localhost:8080/health
 curl http://localhost:8080/test
 ```
 
-### Watch pod restarts:
+### Monitor the application:
 ```bash
-# Watch pods restarting after crashes
+# Watch pod status
 kubectl get pods -l app=flask-crash-app -w
 
 # View logs
 kubectl logs -l app=flask-crash-app -f
 ```
 
-## Observing Failures
+## Testing the Application
 
-Run multiple test requests to observe the crash behavior:
+Run multiple test requests to verify stable behavior:
 ```bash
 for i in {1..20}; do
   echo "Request $i:"
@@ -82,4 +79,4 @@ for i in {1..20}; do
 done
 ```
 
-You'll see pods restarting as the application crashes on some requests.
+The application should handle all requests successfully without crashing.
