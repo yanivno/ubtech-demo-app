@@ -40,8 +40,8 @@ docker build -t flask-crash-app:latest .
 kubectl apply -f k8s/
 
 # Check deployment status
-kubectl get pods -l app=flask-crash-app
-kubectl get svc flask-crash-app
+kubectl get pods -l app=super-important-app
+kubectl get svc super-important-app-service
 ```
 
 ### Test the application:
@@ -50,7 +50,7 @@ kubectl get svc flask-crash-app
 # minikube service flask-crash-app --url
 
 # Or port-forward
-kubectl port-forward svc/flask-crash-app 8080:80
+kubectl port-forward svc/super-important-app-service 8080:80
 
 # Test endpoints
 curl http://localhost:8080/
@@ -61,10 +61,10 @@ curl http://localhost:8080/test
 ### Monitor the application:
 ```bash
 # Watch pod status
-kubectl get pods -l app=flask-crash-app -w
+kubectl get pods -l app=super-important-app -w
 
 # View logs
-kubectl logs -l app=flask-crash-app -f
+kubectl logs -l app=super-important-app -f
 ```
 
 ## Testing the Application
