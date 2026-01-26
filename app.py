@@ -33,15 +33,18 @@ def test():
     failure_chance = random.random()
     
     if failure_chance < 0.15:
-        # Simulate a crash - exit the process
-        print(f"Request #{request_count}: CRASH! Application terminating...", flush=True)
-        sys.stdout.flush()
-        os._exit(1)  # Force exit to simulate crash
+        # Simulate an error but don't crash - return 500 instead
+        print(f"Request #{request_count}: Simulating severe error (formerly crash)...", flush=True)
+        return jsonify({
+            "status": "error",
+            "message": "Simulated severe error - but handled gracefully",
+            "request_number": request_count
+        }), 500
     
     elif failure_chance < 0.30:
-        # Simulate an unhandled exception
-        print(f"Request #{request_count}: Unhandled exception occurring...", flush=True)
-        raise RuntimeError("Simulated unhandled exception - application unstable!")
+        # Simulate an unhandled exception - will be caught by error handler
+        print(f"Request #{request_count}: Simulating exception...", flush=True)
+        raise RuntimeError("Simulated exception - handled by error handler")
     
     else:
         # Success case
@@ -54,12 +57,26 @@ def test():
 
 @app.errorhandler(Exception)
 def handle_exception(e):
+    """Handle all unhandled exceptions gracefully"""
+    import traceback
+    # Log the error for debugging
+    print(f"Exception handled: {type(e).__name__}: {str(e)}", flush=True)
+    traceback.print_exc()
+    
     return jsonify({
         "status": "error",
-        "message": str(e)
+        "message": str(e),
+        "type": type(e).__name__
     }), 500
 
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    print(f"Starting Flask application on port {port}...", flush=True)
-    app.run(host='0.0.0.0', port=port, debug=False)
+# Add signal handlers for graceful shutdown
+def handle_signal(signum, frame):
+    """Handle termination signals gracefully"""
+    print(f"Received signal {signum}, shutting down gracefully...", flush=True)
+    sys.exit(0)
+
+signal.signal(signal.SIGTERM, handle_signal)
+signal.signal(signal.SIGINT, handle_signal)
+
+# For gunicorn compatibility, expose the app object
+# Remove the if __name__ == '__main__' block that runs Flask dev server
