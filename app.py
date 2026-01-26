@@ -1,7 +1,7 @@
 import os
 import random
-import signal
 import sys
+import traceback
 from flask import Flask, jsonify
 
 app = Flask(__name__)
@@ -58,7 +58,6 @@ def test():
 @app.errorhandler(Exception)
 def handle_exception(e):
     """Handle all unhandled exceptions gracefully"""
-    import traceback
     # Log the error for debugging
     print(f"Exception handled: {type(e).__name__}: {str(e)}", flush=True)
     traceback.print_exc()
@@ -69,14 +68,5 @@ def handle_exception(e):
         "type": type(e).__name__
     }), 500
 
-# Add signal handlers for graceful shutdown
-def handle_signal(signum, frame):
-    """Handle termination signals gracefully"""
-    print(f"Received signal {signum}, shutting down gracefully...", flush=True)
-    sys.exit(0)
-
-signal.signal(signal.SIGTERM, handle_signal)
-signal.signal(signal.SIGINT, handle_signal)
-
 # For gunicorn compatibility, expose the app object
-# Remove the if __name__ == '__main__' block that runs Flask dev server
+# Gunicorn handles signal processing and graceful shutdown via --graceful-timeout
