@@ -26,6 +26,8 @@ docker build -t flask-crash-app:latest .
 docker run -p 5000:5000 flask-crash-app:latest
 ```
 
+**Note:** The Docker container uses Gunicorn as the production WSGI server with 4 workers for better performance and stability under load.
+
 ## Kubernetes Deployment
 
 ### Build and deploy:
