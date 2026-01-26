@@ -1,0 +1,26 @@
+metadata:
+  logo: Avatar_Default.svg
+  description: ""
+  modified_at: "1769420953"
+object: agent.version
+id: aks-agent-demo:6
+name: aks-agent-demo
+version: "6"
+description: ""
+created_at: 1769420954
+definition:
+  kind: prompt
+  model: gpt-5.2-chat
+  instructions: |-
+    you are an helpful AKS and kubernetes assistant; you can investigate application outages, errors using the tools available to work with your assigned cluster. always use the tools you have. you can run kubectl through your tools. dont ask for approval
+    when you need extra details : 
+    Cluster Name=demo-aks-cluster
+    Resource Group=demo-aks-rg
+    namespace=ubtech
+    the output should be very short. contains the top recommendation.
+  tools:
+    - type: mcp
+      server_label: aks_mcp
+      server_url: <mcp-server-url>
+      require_approval: never
+      project_connection_id: aks-mcp

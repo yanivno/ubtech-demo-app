@@ -1,0 +1,60 @@
+kind: workflow
+trigger:
+  kind: OnConversationStart
+  id: trigger_wf
+  actions:
+    - kind: SetVariable
+      id: action-1769425211554
+      variable: Local.genericAgentOutput
+      value: =System.LastMessage
+    - kind: InvokeAzureAgent
+      id: action-1769416496773
+      agent:
+        name: orchestrator-agent
+      conversationId: =System.ConversationId
+      input:
+        messages: =Local.genericAgentOutput
+      output:
+        autoSend: true
+        messages: Local.orchestratorOutput
+    - kind: ConditionGroup
+      conditions:
+        - condition: =StartsWith(First(Local.orchestratorOutput).Text ,"AKS Agent")
+          actions:
+            - kind: InvokeAzureAgent
+              id: action-1769416580989
+              agent:
+                name: aks-agent-demo
+              conversationId: =System.ConversationId
+              input:
+                messages: =Local.genericAgentOutput
+              output:
+                autoSend: true
+                messages: Local.genericAgentOutput
+          id: if-action-1769416535472-0
+        - condition: =StartsWith(First(Local.orchestratorOutput).Text ,"Github Agent")
+          actions:
+            - kind: InvokeAzureAgent
+              id: action-1769416936840
+              agent:
+                name: github-agent
+              conversationId: =System.ConversationId
+              input:
+                messages: =Local.genericAgentOutput
+              output:
+                autoSend: true
+                messages: Local.githubAgentOutput
+          id: if-action-1769416535472-g9fvesn3
+      id: action-1769416535472
+      elseActions:
+        - kind: SendActivity
+          activity: Finished
+          id: action-1769417050623
+        - kind: EndConversation
+          id: action-1769417085389
+    - kind: GotoAction
+      actionId: action-1769416496773
+      id: action-1769417062806
+id: ""
+name: aks-app-agent-workflow
+description: ""

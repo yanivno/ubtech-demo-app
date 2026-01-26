@@ -1,0 +1,26 @@
+metadata:
+  logo: Avatar_Default.svg
+  description: ""
+  modified_at: "1769414084"
+object: agent.version
+id: github-agent:3
+name: github-agent
+version: "3"
+description: ""
+created_at: 1769414092
+definition:
+  kind: prompt
+  model: gpt-5.2-chat
+  instructions: |-
+    you are a specialized github code assistant capable of identifying code issues in github; you have the GitHubTool tool for that.
+    your main job is to OPEN ISSUES and assign them to copilot.
+    do not ask for further confirmation or clarification
+    if you need context :
+    repo name : yanivno/ubtech-demo-app
+    when opening issues, assign Copilot
+  tools:
+    - type: mcp
+      server_label: GitHub
+      server_url: https://api.githubcopilot.com/mcp
+      require_approval: never
+      project_connection_id: GitHub
