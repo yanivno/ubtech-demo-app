@@ -1,16 +1,13 @@
-# Flask Crash Test Application
+# Flask Test Application
 
-A simple Flask application designed to demonstrate Kubernetes resilience by randomly failing on `/test` requests.
+A simple Flask application with multiple endpoints for testing Kubernetes deployments.
 
 ## Application Behavior
 
 - **`/`** - Home endpoint, always returns success
 - **`/health`** - Health check endpoint for liveness probe
 - **`/ready`** - Readiness check endpoint
-- **`/test`** - Test endpoint that randomly:
-  - Returns success (~70% of the time)
-  - Throws an unhandled exception (~15% of the time)
-  - Crashes the application (~15% of the time)
+- **`/test`** - Test endpoint that returns success with request count
 
 ## Local Development
 
@@ -43,8 +40,8 @@ docker build -t flask-crash-app:latest .
 kubectl apply -f k8s/
 
 # Check deployment status
-kubectl get pods -l app=flask-crash-app
-kubectl get svc flask-crash-app
+kubectl get pods -l app=super-important-app
+kubectl get svc super-important-app-service
 ```
 
 ### Test the application:
@@ -53,7 +50,7 @@ kubectl get svc flask-crash-app
 # minikube service flask-crash-app --url
 
 # Or port-forward
-kubectl port-forward svc/flask-crash-app 8080:80
+kubectl port-forward svc/super-important-app-service 8080:80
 
 # Test endpoints
 curl http://localhost:8080/
@@ -61,18 +58,18 @@ curl http://localhost:8080/health
 curl http://localhost:8080/test
 ```
 
-### Watch pod restarts:
+### Monitor the application:
 ```bash
-# Watch pods restarting after crashes
-kubectl get pods -l app=flask-crash-app -w
+# Watch pod status
+kubectl get pods -l app=super-important-app -w
 
 # View logs
-kubectl logs -l app=flask-crash-app -f
+kubectl logs -l app=super-important-app -f
 ```
 
-## Observing Failures
+## Testing the Application
 
-Run multiple test requests to observe the crash behavior:
+Run multiple test requests to verify stable behavior:
 ```bash
 for i in {1..20}; do
   echo "Request $i:"
@@ -82,4 +79,4 @@ for i in {1..20}; do
 done
 ```
 
-You'll see pods restarting as the application crashes on some requests.
+The application should handle all requests successfully without crashing.
